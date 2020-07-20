@@ -27,3 +27,31 @@ def todolist(request):
     todos = Todo.objects.all()
     serializer = TodoSerializer(todos,many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def tododetail(request,id):
+    todo = Todo.objects.get(id=id)
+    serializer = TodoSerializer(todo,many=False)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def todocreate(request):
+    serializer = TodoSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def todoupdate(request,id):
+    todo = Todo.objects.get(id=id)
+    serializer = TodoSerializer(instance=todo,data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+def tododelete(request,id):
+    todo = Todo.objects.get(id=id)
+    todo.delete()
+    return Response(f"Item of index {id} is deleted successfully!")
